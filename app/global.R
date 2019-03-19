@@ -7,6 +7,7 @@ library(tidyverse)
 library(RJSONIO)
 library(stringr)
 library(writexl)
+library(zip)
 
 #####################################   UPDATE EACH NEW TOOL REBUILD #############################################
 assessmentCycle <- '2018-2019'

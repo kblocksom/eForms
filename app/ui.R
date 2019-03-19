@@ -52,25 +52,19 @@ shinyUI(fluidPage(theme="yeti.css",
                                                        shinyDirButton('directory', 'Select Directory', 'Please select a folder'), br(),
                                                        p('2) Click the Upload button below when you are ready to analyze all data in the selected directory.'),
                                                        actionButton('uploadFiles','Upload all files in selected directory'), br(),
-                                                       p('3) If you want to save the parsed files to the local directory, please choose the appropriate output file 
-                                                         format and click the Save Results button.'),
-                                                       radioButtons('fileFormat', 'Output File Format', choices = c('.csv', '.xlsx')),
-                                                       downloadButton("download","Save Results in Selected File Format")),
+                                                       p('3) If you want to save the parsed files to the local directory, please click the download button for the appropriate
+                                                         output file format. The buttons will not be available until the data is finished processing.
+                                                         Once the buttons are available, you may download data. Note: saving as .csv will download a 
+                                                         .zip of all .csv files. All downloads will be saved to your downloads folder.'),
+                                                       downloadButton("downloadxlsx","Save Results as .xlsx"),
+                                                       downloadButton("downloadcsv","Save Results as .csv")),
                                           
                                           mainPanel(
                                             h5('Preview files in directory'),
-                                            tableOutput('preview')#,
-                                            #p('verbatim1'),
-                                            #verbatimTextOutput('verbatim1')
-                                            #p('verbatim2'),
-                                            #verbatimTextOutput('verbatim2'),
-                                            #p('verbatim3'),
-                                            #verbatimTextOutput('verbatim3'),
-                                            #p('verbatim4'),
-                                            #verbatimTextOutput('verbatim4')
-                                                    )),
+                                            tableOutput('preview'))),
                                  tabPanel('Landowner Report')
                       )
                     ))
-                  ))
+                  )
+)
                                           
