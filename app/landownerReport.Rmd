@@ -1,0 +1,145 @@
+---
+output:   
+  html_document:
+    theme: yeti
+---
+
+<style type="text/css" media="all">
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+	
+	<body style="-webkit-print-color-adjust:exact;">"
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(knitr))
+
+
+z <- readRDS('testData.RDS')
+
+```
+
+<div class=WordSection1>
+
+<div class='titleSection'>
+
+<table class=MsoTableGrid; cellspacing=0; cellpadding=0; style='border-collapse:collapse; border:none; float: left;'>
+ <tr>
+  <td valign=top style='width:200pt;  padding:0in 5.4pt 0in 5.4pt'>
+  <img src='NRSA logo_sm.png' width="250"  />
+  </td>
+ </tr>
+</table>
+<br>
+
+
+<table class=MsoTableGrid; cellspacing=0; cellpadding=0; style='border-collapse:collapse; border:none; float: right;'>
+ <tr>
+  <td valign=top style='width:450pt;  padding:0in 5.4pt 0in 5.4pt'>
+***
+##National Rivers and Streams Assessment Landowner Report
+***
+#### About
+This report provides landowners with preliminary data available after sampling. Additional information can be provided to you after laboratory analyses are completed. If you would like to be notified when this information is available, please contact the Crew Leader.
+
+  </td>
+ </tr>
+</table>
+
+
+<div class='nextdiv'>
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div class='nextdiv' style='float:left;'>
+<table class=MsoTableGrid cellspacing=0 cellpadding=0 style='border-collapse:collapse; border:none; float:left;'>
+
+<table class=MsoTableGrid cellspacing=0 cellpadding=0 style='border-collapse:collapse; border:none; float:left;'>
+<tr>
+<td width=319 valign=top style='width:239.4pt;  padding:0in 3pt 0in 3pt'>
+<br>
+
+####Station Information
+
+```{r, echo=FALSE}
+verification <- dplyr::filter(z[['VERIFICATION']], PARAMETER %in% c('SITE_ID','VISIT_NO', "DATE_COL","LOC_NAME","CREW",
+                                                                    "ACTUAL_LAT_DD","ACTUAL_LON_DD","VALXSITE",'ADD_SITE_CHAR',
+                                                                    "GEN_COM","DRCTNS","RCHWIDTH","TRCHLEN","CREW_LEADER")) %>%
+  select(PARAMETER, RESULT)
+verification_tbl <- filter(verification, !(PARAMETER %in% c('ACTUAL_LAT_DD','ACTUAL_LON_DD',
+                                                            "CREW","DRCTNS","RCHWIDTH" ))) %>%
+  mutate(PARAMETER = dplyr::recode(PARAMETER, "SITE_ID"='Site ID',"VISIT_NO"='Visit Number',
+                                   "DATE_COL"='Sample Date',
+                                   "LOC_NAME"='Location',"VALXSITE"='Sample Type', 
+                                       "ADD_SITE_CHAR"='Site Characteristics',
+                                       "GEN_COM"='General Site Comments',"TRCHLEN"= 'Reach Length' ,
+                                       "CREW_LEADER"='Crew Leader')) 
+DT::datatable(verification_tbl,
+              rownames=F,colnames=c('',''),options=list(ordering=F,dom='t'),width=350)
+    #knitr::kable(stationinfo,format='html',table.att="style='width:30%;'")
+```
+
+  </td>
+ </tr>
+</table>
+
+<table class=MsoTableGrid cellspacing=0 cellpadding=0 style='border-collapse:collapse; border:none; float:left; padding:80 0 0 0'>
+  <tr>
+  <td width=319 valign=top style='width:239.4pt;  padding:0in 3pt 0in 3pt'>
+  <br>
+    
+####Field Parameters
+```{r, echo= FALSE}
+  ## Field parameters
+  field <- dplyr::filter(z[['FIELD']], PARAMETER %in% c("DO_DISPLAYED_UNITS" ,"LOCATION","TIME" ,"DO","TEMPERATURE" ,
+                                                        "PH","CONDUCTIVITY","CORRECTED")) 
+  DOunits <- as.character(filter(field, PARAMETER =='DO_DISPLAYED_UNITS')$RESULT)
+  CONDUCTIVITYunits <- ifelse(as.character(filter(field, PARAMETER == 'CORRECTED')$RESULT)=='Y', 'μS/cm @ 25C','μS/cm')
+  
+  field_tbl <- filter(field, PARAMETER %in% c('TEMPERATURE','DO','PH', 'CONDUCTIVITY')) %>%
+    dplyr::select(PARAMETER, RESULT) %>%
+    mutate(group = PARAMETER, #for rearranging
+           RESULT = ifelse(PARAMETER == 'DO', paste(RESULT,DOunits,sep=' '),RESULT),
+           RESULT = ifelse(PARAMETER == 'TEMPERATURE', paste(RESULT,'C',sep=' '),RESULT),
+           RESULT = ifelse(PARAMETER == 'CONDUCTIVITY', paste(RESULT,CONDUCTIVITYunits,sep=' '),RESULT)) %>%
+    mutate(group = recode(group, 'TEMPERATURE'=1, 'DO'=2, 'PH'=3,'CONDUCTIVITY'=4),
+           PARAMETER = recode(PARAMETER,'TEMPERATURE'='Temperature', 'DO'='Dissolved Oxygen', 'PH'='pH','CONDUCTIVITY'='Conductivity')) %>%
+    arrange(group) %>%
+    dplyr::select(-group)
+  
+  DT::datatable(field_tbl,
+                rownames=F,colnames=c('',''),options=list(ordering=F,dom='t'),width=350)
+  
+```
+  
+  </td>
+ </tr>
+</table>
+
+<br>
+
+</div>
+
+
+
+
+```{r results='asis', echo=FALSE}
+# Setting `results = 'asis'` allows for using Latex within the code chunk
+cat('\\begin{center}')
+# `{c c}` Creates a two column table
+# Use `{c | c}` if you'd like a line between the tables
+cat('\\begin{tabular}{ c c }')
+print(knitr::kable(mtcars[1:5, 1:5], format = 'latex'))
+# Separate the two columns with an `&`
+cat('&')
+print(knitr::kable(mtcars[1:5, 1:5], format = 'latex'))
+cat('\\end{tabular}')
+cat('\\end{center}')
+``` 
+
+</div>

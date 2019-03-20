@@ -38,3 +38,5 @@ rsconnect/
 
 data/
 app.zip
+app.deq
+*.hmtl

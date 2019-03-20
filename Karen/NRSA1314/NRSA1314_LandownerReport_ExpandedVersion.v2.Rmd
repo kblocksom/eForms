@@ -1,0 +1,116 @@
+---
+title: ''
+author: ''
+date: ''
+output:
+  word_document: default
+params:
+  siteInput: 
+    label: "SITE_ID:"
+    value: ""
+  wd:
+    label: "Working directory:"
+    value: !r getwd()
+    input: file
+  dataIn: 
+    label: "Condition file: (.csv or .tab (tab delimited))"
+    value: allCond.tab
+  fishIn: 
+    label: "Fish count file: (.csv or .tab (tab delimited))"
+    value: fishCts.tab
+
+---
+
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
+library(plyr)
+library(dplyr)
+library(knitr)
+
+# allData <- read.delim("L:/priv/CORFiles/IM-TH007/data/im/nrsa1314/data/tabfiles/allCond.tab",sep='\t',stringsAsFactors=F)
+# fishData <- read.delim("L:/priv/CORFiles/IM-TH007/data/im/nrsa1314/data/tabfiles/FishCts.tab",sep='\t',stringsAsFactors=F)
+
+# Look at extension to determine how to import (.tab or .csv are the only ones allowed)
+if(substring(params$dataIn,nchar(params$dataIn)-3,nchar(params$dataIn))=='.tab'){
+  allData <- read.delim(paste0(params$wd,"/",params$dataIn),sep='\t',stringsAsFactors=F)
+}else{
+  allData <- read.csv(paste0(params$wd,"/",params$dataIn),stringsAsFactors=F)
+}
+
+if(substring(params$fishIn,nchar(params$dataIn)-3,nchar(params$fishIn))=='.tab'){
+  fishData <- read.delim(params$fishIn,sep='\t',stringsAsFactors=F)
+}else{
+  fishData <- read.csv(paste0(params$wd,"/",params$fishIn),stringsAsFactors=F)
+}
+
+
+subData <- subset(allData, SITE_ID==params$siteInput) %>%
+  arrange(SITE_ID,YEAR,VISIT_NO) 
+
+subData.1 <- subData[!duplicated(subData[,c('SITE_ID')]),] %>%
+  mutate(AG_ECO9_NM=gsub('Temporate','Temperate',AG_ECO9_NM))
+
+subFish <- subset(fishData, SITE_ID==subData.1$SITE_ID & VISIT_NO==subData.1$VISIT_NO & YEAR==subData.1$YEAR)
+
+include_graphics("NRSA logo_sm.png")
+
+```
+
+# National Rivers and Streams Assessment Landowner Report
+
+## Station Information
+
+------
+
+  |   |
+---------------  |  ------------------------------
+**Site ID:**    |  `r subData.1$SITE_ID`
+**Year:**    | `r subData.1$YEAR`
+**Visit:**  | `r subData.1$VISIT_NO`
+**Sampling Date:** | `r subData.1$DATE_COL`
+**Latitude:**     |  `r subData.1$LAT_DD83`
+**Longitude:**    | `r subData.1$LON_DD83`
+**Ecoregion:**   | `r subData.1$AG_ECO9_NM`
+
+
+----
+
+## Indicator Values  
+
+### Biological Indicators
+
+**Parameter** |  **Result** | **Condition Class** 
+--------- | ------- | ---------------
+Macroinvertebrate Index | `r subData.1$MMI_BENT` | `r subData.1$BENT_MMI_COND`
+Fish Index | `r subData.1$MMI_FISH` | `r subData.1$FISH_MMI_COND`
+
+**Fish Species Collected:**
+`r unique(subFish$FINAL_NAME)`
+
+### Chemical Indicators
+
+**Parameter** |  **Result** | **Condition Class**
+--------- | ------- |  --------------
+Total Phosphorus | `r paste(subData.1$PTL,'ug/L')` | `r subData.1$PTL_COND`
+Total Nitrogen | `r paste(subData.1$NTL_UG_L,"ug/L")` | `r subData.1$NTL_COND`
+Conductivity | `r paste(subData.1$COND,"uS/cm")` | `r subData.1$SAL_COND`
+Acidity | `r paste(subData.1$ANC,"ueq/L")` | `r subData.1$ANC_COND`
+
+### Human Health Indicators
+
+**Parameter** |  **Result** | **Condition Class**
+--------- | ------- | ----------------
+Enterococci | `r paste(round(subData.1$ENT_1X_CCE_100ML,2),'cce/100 ml')` | `r subData.1$ENT_1X_STV_COND`
+Microcystin | `r paste(round(subData.1$MICX_RESULT,2),"ug/L")` | `r subData.1$MICX_COND`
+Fish Tissue Mercury | `r paste(round(subData.1$MERCURY_RESULT,2),"ng/g")` |`r subData.1$HG_COND`
+
+### Physical Habitat Indicators
+
+**Parameter** |  **Result** | **Condition Class**
+--------- | ------- | ----------------
+Instream Cover | `r paste("Log(areal prop'n natural fish cover):",round(subData.1$L_XFC_NAT,3))` | `r subData.1$INSTRMCVR_COND`
+Riparian Vegetation | `r paste("Log(areal prop'n woody vegetation):",round(subData.1$L_XCMGW,3))` | `r subData.1$RIPVEG_COND`
+Riparian Disturbance | `r subData.1$W1_HALL` | `r subData.1$RIPDIST_COND`
+Relative Bed Stability | `r subData.1$LRBS_USE` | `r subData.1$BEDSED_COND`
+
+
