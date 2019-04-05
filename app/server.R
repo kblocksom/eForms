@@ -13,6 +13,7 @@ shinyServer(function(input, output, session) {
   userData <- reactiveValues()
   
   
+  # Bring in user data when they select directory
   volumes <- getVolumes()
   shinyDirChoose(input, 'directory', roots=volumes, session=session)
   path1 <- reactive({
@@ -23,24 +24,25 @@ shinyServer(function(input, output, session) {
     list.files(paste(path1(),'/',sep=''), pattern='json|JSON')
   })
  
+  
+  # Files in directory preview for UI
   output$preview <- renderTable({
     req(filesInDir())
     filesInDir() })
   
   
+  # The user data
   observeEvent(input$uploadFiles, { 
     userData$finalOut <- karenOrganizationShiny(path1()[1], list.files(paste(path1(),'/',sep=''), pattern='json|JSON') )  })
 
-  # Don't let user click download button if no data available
-  observe({
-    shinyjs::toggleState('downloadxlsx', length(userData$finalOut) != 0  )
-  })
-  observe({
-    shinyjs::toggleState('downloadcsv', length(userData$finalOut) != 0  )
-  })
   
-  output$downloadxlsx<- downloadHandler(
-    filename = function() { 
+  # Don't let user click download button if no data available
+  observe({ shinyjs::toggleState('downloadxlsx', length(userData$finalOut) != 0  )  })
+  observe({ shinyjs::toggleState('downloadcsv', length(userData$finalOut) != 0  )  })
+  
+  
+  # Download Excel File
+  output$downloadxlsx<- downloadHandler( filename = function() { 
       paste( str_extract(paste(path1()[1],
                                list.files(paste(path1(),'/',sep=''), pattern='json|JSON')[1],sep='/'),
                          "[:alnum:]+\\_[:alpha:]+\\_[:alnum:]+\\_[:alnum:]\\_"),
@@ -50,9 +52,9 @@ shinyServer(function(input, output, session) {
   )
   
   
+  # Download CSV
   
-  output$downloadcsv <- downloadHandler(
-    filename = function() {
+  output$downloadcsv <- downloadHandler( filename = function() {
       paste(str_extract(paste(path1()[1],
                               list.files(paste(path1(),'/',sep=''), pattern='json|JSON')[1],sep='/'),
                         "[:alnum:]+\\_[:alpha:]+\\_[:alnum:]+\\_[:alnum:]\\_"), "csvFiles.zip", sep="")
@@ -77,5 +79,38 @@ shinyServer(function(input, output, session) {
   )
 
   
-  #output$verbatim1 <- renderPrint({length(userData$finalOut)})
+  ####--------------------------------------- RMARKDOWN SECTION--------------------------------------------------
+  
+  # Send input data to html report
+  output$report <- downloadHandler(
+    paste(unique(userData$finalOut[[1]][[1]]$SITE_ID),"_LandownerReport.html",sep=""),
+    content= function(file){
+      tempReport <- file.path(tempdir(),"landownerReport_fromApp.Rmd")
+      print(list.files(tempdir()))
+      imageToSend1 <- file.path(tempdir(),'NRSA logo_sm.png') # choose image name
+      file.copy("landownerReport_fromApp.Rmd",tempReport,overwrite = T)
+      file.copy(imageToSend1, 'NRSA logo_sm.png') # same name
+      params <- list(userDataRMD=userData$finalOut)
+      
+      
+      rmarkdown::render(tempReport,output_file = file,
+                        params=params, envir=new.env(parent = globalenv()))})
+      
+      
+  
+  
+  ## Send input data to html report
+  #output$report <- downloadHandler(
+  #  paste(unique(userData$finalOut[[1]][[1]]$SITE_ID),"_LandownerReport.html",sep=""),
+  #  content= function(file){
+  #    tempReport <- file.path(tempdir(),"landownerReport_fromApp.Rmd")
+  #    file.copy("landownerReport_fromApp.Rmd",tempReport,overwrite = T)
+  #    params <- list(userDataRMD=userData$finalOut)
+  #    
+  #    rmarkdown::render(tempReport,output_file = file,
+  #                      params=params,envir=new.env(parent = globalenv()))})
+  
+  
+  
+  #output$verbatim1 <- renderPrint({unique(userData$finalOut[[1]][[1]]$SITE_ID)})
 })

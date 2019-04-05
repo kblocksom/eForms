@@ -62,7 +62,9 @@ shinyUI(fluidPage(theme="yeti.css",
                                           mainPanel(
                                             h5('Preview files in directory'),
                                             tableOutput('preview'))),
-                                 tabPanel('Landowner Report')
+                                 tabPanel('Landowner Report',
+                                          sidebarPanel(h3('Some instructions and stuff')),
+                                          mainPanel(downloadButton('report','Generate Landowner Report (HTML)')))
                       )
                     ))
                   )
