@@ -1,24 +1,12 @@
 ---
-output:   
-  html_document:
-    self_contained: no
-    theme: yeti
+title: ""
+author: ""
+date: ""
 params:
   userDataRMD: 'NULL'
-always_allow_html: yes
+output: html_document
 ---
 
-
-
-<style type="text/css" media="all">
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
-	
-	<body style="-webkit-print-color-adjust:exact;">"
-</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -26,45 +14,15 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(kableExtra))
 
-#report test dataset
-#z <- readRDS('testData.RDS')
 
 ```
 
 
-<div class=WordSection1>
-
-<div class='titleSection'>
-
-<table class=MsoTableGrid; cellspacing=0; cellpadding=0; style='border-collapse:collapse; border:none; float: left;'>
- <tr>
-  <td valign=top style='width:200pt;  padding:0in 5.4pt 0in 5.4pt'>
-  ![NRSA_Logo](NRSA_logo_sm.png)
-  </td>
- </tr>
-</table>
-<br>
-
-
-<table class=MsoTableGrid; cellspacing=0; cellpadding=0; style='border-collapse:collapse; border:none; float: right;'>
- <tr>
-  <td valign=top style='width:450pt;  padding:0in 5.4pt 0in 5.4pt'>
-***
-##National Rivers and Streams Assessment Landowner Report
-***
-#### About
-This report provides landowners with preliminary data available after sampling. Additional information can be provided to you after laboratory analyses are completed. If you would like to be notified when this information is available, please contact the Crew Leader.
-
-  </td>
- </tr>
-</table>
-</div>
-</div>
-
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
-
 
 ```{r, echo=FALSE}
+
+include_graphics("NRSA_logo_sm.png")
+
 verification <- dplyr::filter(params[['userDataRMD']][['VERIFICATION']][[1]], PARAMETER %in% c('SITE_ID','VISIT_NO', "DATE_COL","LOC_NAME","CREW",
                                                                                                "ACTUAL_LAT_DD","ACTUAL_LON_DD","VALXSITE",'ADD_SITE_CHAR',
                                                                                                "GEN_COM","DRCTNS","RCHWIDTH","TRCHLEN","CREW_LEADER")) %>%
@@ -108,11 +66,14 @@ assessment <- dplyr::filter(params[['userDataRMD']][['ASSESSMENT']][[1]], PARAME
 
 ## samples collected
 # generic samples and description
-samples <- tibble(Sample = c('CHEM', 'WCHL', 'PERI', 'PCHL', 'PBIO', 'PDNA', 'MICX', 'MICZ', 'ENTE'),
-                  `Sample Name` = c('Water Chemistry','Chlorophyll a','Periphyton','Periphyton','Periphyton','Periphyton',
-                                    "Microcystin & Cylindrospermopsin", "Microcystin & Cylindrospermopsin",'Enterococci'),
-                  Description = c('Analyzed for nutrients, basic anions & cations, turbidity, organic carbon, etc.',
-                                  'more explanation','...','...','...','...','...','...','...'))
+samples <- tibble(Sample = c('CHEM', 'WCHL', 'PERI', 'PCHL', 'PBIO', 'PDNA', 'MICX', 'ENTE','BENT'),
+                  `Sample Name` = c('Water Chemistry','Water Chlorophyll a','Periphyton Assemblage','Periphyton Chlorophyll a','Periphyton Biomass','Periphyton DNA',
+                                    "Microcystin & Cylindrospermopsin", 'Enterococci','Benthic Macroinvertebrates'),
+                  Description = c('Nutrients (nitrogen and phosphorus), basic anions & cations, turbidity, organic carbon',
+                                  'Chlorophyll a content in water sample','Algal species composition',
+                                  'Chlorophyll a content in periphyton sample','Biomass in periphyton scraping',
+                                  'eDNA fragments in water','Analyzed for algal toxins in water','*E.coli* and enterococci',
+                                  'Benthic macroinvertebrate composition'))
 # filter to only what was collected
 samplesTaken <- unique(params[['userDataRMD']][['SAMPLES']][[1]]$SAMPLE_TYPE)[!(unique(params[['userDataRMD']][['SAMPLES']][[1]]$SAMPLE_TYPE) %in% 'SAMP')]
 samples_tbl <- filter(samples, Sample %in% samplesTaken) %>%
@@ -135,24 +96,28 @@ fishTaxa <- filter(fishTaxa,  PARAMETER == 'NAME_COM') %>%
   arrange(desc(Count))
 ```
 
+##National Rivers and Streams Assessment Landowner Report
+
+#### About
+This report provides landowners with preliminary data available after sampling. Additional information can be provided to you after laboratory analyses are completed. If you would like to be notified when this information is available, please contact the Crew Leader.
 
 
 
 ```{r row 1 tables, echo=F}  
-kable(verification_tbl,col.names=c('Station Information','')) %>%
+kable(verification_tbl,col.names=c('Station Information',''), align=c('l','r')) %>%
   kable_styling(bootstrap_options = 'condensed', full_width = F, position = "float_left") %>%
   column_spec(1, border_right = T) %>%
   column_spec(2, width = "15em")
 
-kable(field_tbl,col.names=c('Field Data','')) %>%
+kable(field_tbl,col.names=c('Field Data',''), align=c('l','r')) %>%
   kable_styling(bootstrap_options = 'condensed', full_width = F, position = "float_left") %>%
-  column_spec(1, border_right = T, width = "8em") %>%
-  column_spec(2, width = "12em")
+  column_spec(1, border_right = T, width = "10em") %>%
+  column_spec(2, width = "15em")
 
-kable(assessment ,col.names=c('Field Assessment','')) %>%
+kable(assessment ,col.names=c('Field Assessment',''), align=c('l','r')) %>%
   kable_styling(bootstrap_options = 'condensed', full_width = F, position = "float_left") %>%
-  column_spec(1, border_right = T, width = "8em") %>%
-  column_spec(2, width = "12em")
+  column_spec(1, border_right = T, width = "10em") %>%
+  column_spec(2, width = "15em")
 
 ```
 
@@ -160,12 +125,13 @@ kable(assessment ,col.names=c('Field Assessment','')) %>%
 
 
 ```{r row 2 tables, echo=F}
-kable(samples_tbl ,col.names=c('Samples Sent For Laboratory Analysis','')) %>%
+kable(samples_tbl, align=c('l','r')) %>%
+  add_header_above(c('Samples Sent for Laboratory Analysis'=2)) %>%
   kable_styling(bootstrap_options = 'condensed', full_width = F, position = "float_left") %>%
-  column_spec(1, border_right = T, width = "8em") %>%
-  column_spec(2, width = "12em")
+  column_spec(1, border_right = T, width = "15em") %>%
+  column_spec(2, width = "15em")
 
-kable(fishTaxa) %>%
+kable(fishTaxa, align=c('l','r')) %>%
   add_header_above(c("Fish Caught" = 2)) %>%
   kable_styling(bootstrap_options = 'condensed', full_width = F, position = "float_left") %>%
   column_spec(1, border_right = T, width = "12em") %>%

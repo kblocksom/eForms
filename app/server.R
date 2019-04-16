@@ -84,7 +84,7 @@ shinyServer(function(input, output, session) {
   # Send input data to html report
   
   output$report <- downloadHandler(
-    paste(unique(userData$finalOut[[1]][[1]]$SITE_ID),"_LandownerReport.html",sep=""),
+    paste(unique(userData$finalOut[[1]][[1]]$SITE_ID),unique(userData$finalOut[[1]][[1]]$VISIT_NO),"LandownerReport.html",sep="_"),
     content= function(file){
       tempReport <- normalizePath('landownerReport_fromApp.Rmd')
       imageToSend1 <- normalizePath('NRSA_logo_sm.png')  # choose image name
@@ -100,25 +100,4 @@ shinyServer(function(input, output, session) {
   
 
       
-  # Doesn't work but it should work. Normalizing path method seems to be the trick
-  # to get both images and data to a Rmd
-  
-  #output$report <- downloadHandler(
-  #  paste(unique(userData$finalOut[[1]][[1]]$SITE_ID),"_LandownerReport.html",sep=""),
-  #  content= function(file){
-  #    tempReport <- file.path(tempdir(),"landownerReport_fromApp.Rmd")
-  #    print(list.files(tempdir()))
-  #    imageToSend1 <- file.path(tempdir(),'NRSA_logo_sm.png') # choose image name
-  #    file.copy("landownerReport_fromApp.Rmd",tempReport,overwrite = T)
-  #    file.copy(imageToSend1, 'NRSA_logo_sm.png') # same name
-  #    params <- list(userDataRMD=userData$finalOut)
-  #    
-  #    
-  #    rmarkdown::render(tempReport,output_file = file,
-  #                      params=params,
-  #                      envir=new.env(parent = globalenv()))})
- 
-  
-  
-  #output$verbatim1 <- renderPrint({unique(userData$finalOut[[1]][[1]]$SITE_ID)})
 })

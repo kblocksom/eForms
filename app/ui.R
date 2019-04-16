@@ -19,35 +19,40 @@ shinyUI(fluidPage(theme="yeti.css",
                                  tabPanel('About',
                                           fluidRow(column(3,br(),br(),br(),p('Some sort of sweet river picture with people sampling')),
                                                    column(8,h2(strong('Tool Overview')),
-                                                          h5('The Rapid Data Extraction and Reporting Tool expedites data availability
-                                                             to field crews and offers preliminary end-of-day site reports to landowners to 
-                                                             promote survey awareness and continued sampling support. '), 
+                                                          p('The Rapid Data Extraction and Reporting Tool expedites data availability
+                                                            to field crews and offers preliminary end-of-day site reports to landowners to 
+                                                            promote survey awareness and continued sampling support. '), 
                                                           br(),
-                                                          h5('After completing all sampling, sample processing, and data upload procedures to the ',span(strong('EPA SERVER??')), 
-                                                             'users can expect to receive a record of all data submitted to their NARS user email address. The json file 
-                                                             format precludes some users from accessing data, so this tool compiles the json files into spreadsheet formats to 
-                                                             promote data utility and offers and optional site report based on immediate data such as field parameters, taxa 
-                                                             lists, and XXXX to be sent by the team lead to the landowner within ',span(strong('48 hours')),' of sampling.', 
-                                                             span(strong('Bold statement, I know, we can discuss for sure'))),
+                                                          p('After completing all sampling and sample processing, crews submit data from the app to ',
+                                                            span(strong('NARS IM.')),'At that point, all of the .JSON files from that site visit
+                                                            and collected on that iPad will be attached to an email to NARS IM. The crew can copy that email to other
+                                                            addresses and later save those .JSON files (and any from other iPads used at that site) to a folder 
+                                                            containing all of the data collected from an individual site visit.
+                                                            This tool parses and compiles the data from .JSON files into spreadsheet formats to 
+                                                            promote data utility and offers and optional site report based on field-collected data, such as field 
+                                                            parameters and lists of fish species collected, to be sent by the team lead to the landowner shortly 
+                                                            after sampling.'),
                                                           br(),
-                                                          h5('Please direct all questions related to tool troubleshooting and feature requests to
-                                                             Karen Blocksom (Blocksom.Karen@epa.gov) and Emma Jones (emma.jones@deq.virginia.gov).')),
+                                                          p('Please direct all questions related to tool troubleshooting and feature requests to
+                                                            Karen Blocksom (Blocksom.Karen@epa.gov) and Emma Jones (emma.jones@deq.virginia.gov).')),
                                                    column(1)),
                                           
                                           br(),hr(),br(),
                                           fluidRow(column(1),
                                                    column(10,h3(strong('Instructions')),
-                                                          p('After receiving all json files from the server, users will create a single directory to house all data for record
-                                                            keeping purposes. On the Data Upload and Extraction tab, users will select the directory where their data is saved 
-                                                            to upload json files to the app for processing. Once the data is uploaded to the app, users will have the option 
-                                                            to save the data as individual .csv files or a single MS Excel spreadsheet containing sheets of each dataset.'),
+                                                          p('After compiling all of the .JSON files for a site visit into a single directory, users are ready to extract 
+                                                            and organize the data. On the Data Upload and Extraction tab, users select the directory where their data is saved 
+                                                            to upload .JSON files to the app for processing. Once the data is uploaded to the app, users will have the option 
+                                                            to save the data as a .zip file containing individual .csv files or a single MS Excel spreadsheet containing   
+                                                            worksheets of each dataset.'),
                                                           br(),
-                                                          p('If the users wants to generate an end-of-day site report for their records or to distribute to the landowner, they may navigate
-                                                            to the Landowner Report tab and follow the on screen prompts to save an autogenerated HTML file based on their input site data.')),
+                                                          p('After uploading the data, if users want to generate a basic site report for their records or to distribute to the
+                                                            landowner, they may navigate to the Landowner Report tab and follow the on screen prompts to save an autogenerated
+                                                            HTML file based on their input site data.')),
                                                    column(1))  ),
                                  tabPanel('Data Upload and Extraction',
                                           sidebarPanel(h4(strong('Instructions')),
-                                                       p('1) Choose the directory where you have saved all json files associated with a single sample site. A list of all
+                                                       p('1) Choose the directory where you have saved all of the .JSON files associated with a single site visit. A list of all
                                                          file names within the directory will be available for preview to the right when they are available to the app.'),
                                                        shinyDirButton('directory', 'Select Directory', 'Please select a folder'), br(),
                                                        p('2) Click the Upload button below when you are ready to analyze all data in the selected directory.'),
@@ -63,9 +68,10 @@ shinyUI(fluidPage(theme="yeti.css",
                                             h5('Preview files in directory'),
                                             tableOutput('preview'))),
                                  tabPanel('Landowner Report',
-                                          sidebarPanel(h3('Some instructions and stuff')),
+                                          sidebarPanel(h3('This tool creates a basic report in html format based on data collected during a field visit to a site. 
+                                                          It can be saved for crew records or provided to the landowner, either via email or printed and mailed.')),
                                           mainPanel(downloadButton('report','Generate Landowner Report (HTML)')))
-                      )
+                        )
                     ))
                   )
 )
