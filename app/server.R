@@ -73,7 +73,9 @@ shinyServer(function(input, output, session) {
         fs <- c(fs, path)
         write.csv(data.frame(z[[i]]), path, row.names=F)
       }
+
       zip::zipr(zipfile=fname, files=fs)
+
       for(i in 1:length(fs)){
         file.remove(fs[i])
       }
