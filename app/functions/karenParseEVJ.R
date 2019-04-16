@@ -22,12 +22,6 @@ karenOrganizationShiny <- function(path, filelist){
     return(finalOut)
   }
     
-#path = "C:/eFormsData/VA_RF008/" # need to define path first to get list.files command to work    
-#finalList <- karenOrganizationShiny(path = "C:/eFormsData/VA_RF008/",
-#                                filelist = list.files(paste(path,'/',sep=''), pattern='json|JSON') )
-
-
-
 
 
 karenWriteShiny <- function(path, filelist, finalList){#}, fileFormat){
@@ -49,32 +43,6 @@ karenWriteShiny <- function(path, filelist, finalList){#}, fileFormat){
     
     return(c(map(others,1),phab))
 
-    #write_xlsx(c(map(others,1),phab), paste(path, subName.out,"summary.xlsx",sep=''))  
-   # }
-  #if( fileFormat == '.csv'){
-    
-    
-  #  for(i in 1:length(finalList)){
-  #    print(i)
-  #    # This determines the number of data frames in the list output of finalOut and subtracts one 
-  #    # because the last object in the list is always sample type
-  #    numList <- length(finalList[[i]]) - 1
-  #    # if there is only one dataframe in finalList, just add .csv to filename and write file
-  #    if(numList==1){
-  #      finalName.out <- paste(path,'/',subName.out,names(finalList)[i],".csv",sep='')    
-  #      write.csv(finalList[[i]],finalName.out)
-  #    }else{
-  #      for ( j in 1:numList){
-  #        # if there is more than one dataframe, for each data frame, add object name to file name, then write file
-  #        finalName.out <- paste(path,'/',subName.out,names(finalList)[i],'_', names(finalList[[i]])[j],".csv",sep='')
-  #        write.csv(finalList[[i]][j],finalName.out)
-  #      }
-  #    }
-  #    
-  #  }
-  #}
 }
 
-#z <- karenWriteShiny("C:/eFormsData/VA_RF008/", list.files(paste("C:/eFormsData/VA_RF008/",'/',sep=''), pattern='json|JSON' ), finalList)#, '.xlsx')
-#karenWriteShiny("C:/eFormsData/VA_RF008/", list.files(paste(path,'/',sep=''), pattern='json|JSON' ), finalList, '.csv')
 

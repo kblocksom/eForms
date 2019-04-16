@@ -40,7 +40,7 @@ verification_tbl <- filter(verification, !(PARAMETER %in% c('ACTUAL_LAT_DD','ACT
 field <- dplyr::filter(params[['userDataRMD']][['FIELD']][[1]], PARAMETER %in% c("DO_DISPLAYED_UNITS" ,"LOCATION","TIME" ,"DO","TEMPERATURE" ,
                                                                                  "PH","CONDUCTIVITY","CORRECTED")) 
 DOunits <- as.character(filter(field, PARAMETER =='DO_DISPLAYED_UNITS')$RESULT)
-CONDUCTIVITYunits <- ifelse(as.character(filter(field, PARAMETER == 'CORRECTED')$RESULT)=='Y', 'μS/cm @ 25C','μS/cm')
+CONDUCTIVITYunits <- ifelse(as.character(filter(field, PARAMETER == 'CORRECTED')$RESULT)=='Y', 'uS/cm @ 25C','uS/cm')
 
 field_tbl <- filter(field, PARAMETER %in% c('TEMPERATURE','DO','PH', 'CONDUCTIVITY')) %>%
   dplyr::select(PARAMETER, RESULT) %>%

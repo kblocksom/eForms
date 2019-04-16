@@ -240,6 +240,7 @@ organizePhab_W <- function(parsedIn){
 }
 
 organizeAssessment <- function(parsedIn){
+  
   # Simply melt data and clean up parameter names
   aa <- mutate(parsedIn, SAMPLE_TYPE='ASSESS') %>%
     melt(id.vars=c('SAMPLE_TYPE'), variable.name='PARAMETER', value.name='RESULT') %>%
