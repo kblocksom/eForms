@@ -74,6 +74,9 @@ shinyServer(function(input, output, session) {
         write.csv(data.frame(z[[i]]), path, row.names=F)
       }
       zip::zip(zipfile=fname, files=fs)
+      for(i in 1:length(fs)){
+        file.remove(fs[i])
+      }
     },
     contentType = "application/zip"
   )
