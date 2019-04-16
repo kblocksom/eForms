@@ -17,7 +17,7 @@ shinyUI(fluidPage(theme="yeti.css",
                       ),
                       navbarPage(paste("NRSA ",assessmentCycle," Rapid Data Extraction and Reporting Tool", sep=''),
                                  tabPanel('About',
-                                          fluidRow(column(3,br(),br(),br(),p('Some sort of sweet river picture with people sampling')),
+                                          fluidRow(column(3,br(),br(),br(),img(src='oregon_stream.png',align='left')),
                                                    column(8,h2(strong('Tool Overview')),
                                                           p('The Rapid Data Extraction and Reporting Tool expedites data availability
                                                             to field crews and offers preliminary end-of-day site reports to landowners to 
