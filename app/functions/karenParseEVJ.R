@@ -24,7 +24,7 @@ karenOrganizationShiny <- function(path, filelist){
     
 
 
-karenWriteShiny <- function(path, filelist, finalList){#}, fileFormat){
+karenWriteShiny <- function(path, filelist, finalList){
   # Create the first part of the filename for writing to a .csv file, based on visit info and sample type
   subName.out <- str_extract(paste(path,filelist[1],sep='/'),"[:alnum:]+\\_[:alpha:]+\\_[:alnum:]+\\_[:alnum:]\\_")
   
@@ -44,8 +44,9 @@ karenWriteShiny <- function(path, filelist, finalList){#}, fileFormat){
     phab_thalweg <- finalList[specialCases] %>%
       map_df('thalweg') 
     phab <- list(PHAB_channel = phab_channel, PHAB_chanrip = phab_chanrip, PHAB_chanxsec = phab_chanxsec, PHAB_littoral = phab_littoral, PHAB_thalweg = phab_thalweg)
+    meta <- list(Metadata = metadata)
     
-    return(c(map(others,1),phab))
+    return(c(map(others,1),phab,meta))
 
 }
 

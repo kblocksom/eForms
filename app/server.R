@@ -1,8 +1,6 @@
 # Run in R 3.5.2
 source('global.R')
 
-
-
 shinyServer(function(input, output, session) {
   
   # display the loading feature until data loads into app
@@ -33,7 +31,7 @@ shinyServer(function(input, output, session) {
   
   # The user data
   observeEvent(input$uploadFiles, { 
-    userData$finalOut <- karenOrganizationShiny(path1()[1], list.files(paste(path1(),'/',sep=''), pattern='json|JSON') )  })
+    userData$finalOut <- karenOrganizationShiny(path1()[1], list.files(paste(path1(),'/',sep=''), pattern='json|JSON') )  }) 
 
   
   # Don't let user click download button if no data available
@@ -104,5 +102,7 @@ shinyServer(function(input, output, session) {
                         params=params,envir=new.env(parent = globalenv()))})
   
 
-      
+  session$onSessionEnded(function() {
+    stopApp()
+  })     
 })

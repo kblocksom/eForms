@@ -14,7 +14,6 @@ library(zip)
 assessmentCycle <- '2018-2019'
 ##################################################################################################################
 
-
 # Loading screen
 load_data <- function() {
   Sys.sleep(2)
@@ -28,3 +27,5 @@ source('functions/eFormsParseJSONtext.r')
 source('functions/eFormsOrganizeData_byTable.r')
 
 source('functions/karenParseEVJ.R')
+
+metadata <- readRDS("data/metadata.rds")
