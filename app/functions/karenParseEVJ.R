@@ -37,9 +37,13 @@ karenWriteShiny <- function(path, filelist, finalList){#}, fileFormat){
       map_df('channel') 
     phab_chanrip <- finalList[specialCases] %>%
       map_df('chanrip')
+    phab_chanxsec <- finalList[specialCases] %>%
+      map_df('chanxsec') 
+    phab_littoral <- finalList[specialCases] %>%
+      map_df('littoral')
     phab_thalweg <- finalList[specialCases] %>%
       map_df('thalweg') 
-    phab <- list(PHAB_channel = phab_channel, PHAB_chanrip = phab_chanrip, PHAB_thalweg = phab_thalweg)
+    phab <- list(PHAB_channel = phab_channel, PHAB_chanrip = phab_chanrip, PHAB_chanxsec = phab_chanxsec, PHAB_littoral = phab_littoral, PHAB_thalweg = phab_thalweg)
     
     return(c(map(others,1),phab))
 

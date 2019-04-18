@@ -339,17 +339,23 @@ organizePhab_B <- function(parsedIn){
     select(SAMPLE_TYPE,PARAMETER,TRANSECT,BANK,RESULT)
   # littoral
   littoral <- filter(parsedIn.long, str_detect(variable.1,"BOTTOM|SHORE|SUBOBS")) %>%
-    mutate(SAMPLE_TYPE='LITTORALB',BANK=substring(variable.1,1,2),
-           PARAMETER=substring(variable.1,4,nchar(variable.1))) %>%
-    select(SAMPLE_TYPE,PARAMETER,TRANSECT,BANK,RESULT)
+    mutate(SAMPLE_TYPE='LITTORALB',
+           PARAMETER=variable.1) %>%
+    select(SAMPLE_TYPE,PARAMETER,TRANSECT,RESULT)
   
   # tblTHALWEG
-  thalweg <- filter(parsedIn.long, str_detect(variable.1,'THALB_COMMENT|SONAR|SNAG|SIZE_CLS|POLE|OFF_CHAN|DEPTH_UNITS|CHANUNCD')|(str_detect(variable.1,"[:digit:]+\\_DEPTH"))) %>%
+  thalweg <- filter(parsedIn.long, (str_detect(variable.1,'THALB_COMMENT|SONAR|SNAG|SIZE_CLS|POLE|OFF_CHAN|DEPTH_UNITS|CHANUNCD')|(str_detect(variable.1,"[:digit:]+\\_DEPTH"))) & str_detect(variable.1,'\\_PB|CHANDEPTHB')==FALSE) %>%
     mutate(SAMPLE_TYPE='THALB',
            STATION=ifelse(variable.1 %in% c('INCREMENT','REACHLENGTH'),'ALL',
                           str_extract(variable.1,"[:digit:]+"))) %>%
     mutate(PARAMETER=str_replace(variable.1,"[:digit:]+\\_|[:digit:]+\\.",'')) %>%
     select(SAMPLE_TYPE,PARAMETER,TRANSECT,STATION,RESULT)
+  
+  # tblLITTORAL 
+  littdepth <- filter(parsedIn.long, str_detect(variable.1, 'POLE_PB|SONAR_PB|DEPTH_PB|CHANDEPTHB_DEPTH_UNITS')) %>%
+    mutate(SAMPLE_TYPE='CHANDEPTHB',LINE=str_extract(variable.1,"[:digit:]+")) %>%
+    mutate(PARAMETER=str_replace(variable.1,"[:digit:]+\\_|[:digit:]+\\.",'')) %>%
+    select(SAMPLE_TYPE,PARAMETER,TRANSECT,LINE,RESULT)
   
   # tblCHANNEL - constraint
   constraint <- filter(parsedIn.long, str_detect(variable.1,"CONSTRT|SEEOVRBK|SHOR2RIP")) %>%
@@ -368,12 +374,12 @@ organizePhab_B <- function(parsedIn){
     select(SAMPLE_TYPE,PARAMETER,TRANSECT,RESULT)
   
   # Combine data types by database table
-  channel <- rbind(fishc, bank, lwd, constraint)
-  chanrip <- rbind(canopy, visrip, human, littoral)
+  channel <- rbind(fishc, bank, lwd, constraint,littoral)
+  chanrip <- rbind(canopy, visrip, human)
   # Create list of data frames
-  outdf <- list(channel, chanrip, thalweg)
+  outdf <- list(channel, chanrip, littdepth, thalweg)
   # Assign names to each object (data frame) in list
-  names(outdf) <- c('channel','chanrip','thalweg') 
+  names(outdf) <- c('channel','chanrip','littoral','thalweg') 
   
   return(outdf)
 }
