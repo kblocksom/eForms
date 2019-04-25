@@ -54,10 +54,10 @@ field_tbl <- filter(field, PARAMETER %in% c('TEMPERATURE','DO','PH', 'CONDUCTIVI
   dplyr::select(-group)
 
 ## Assessment info
-assessment <- dplyr::filter(params[['userDataRMD']][['ASSESSMENT']][[1]], PARAMETER %in% c('WEATHER','CONDITIONS','OBSERVATIONS','BEAVER_FLOW_MOD')) %>% 
+assessment <- dplyr::filter(params[['userDataRMD']][['ASSESSMENT']][[1]], PARAMETER %in% c('WEATHER','CONDITIONS','BEAVER_FLOW_MOD')) %>% 
   dplyr::select(PARAMETER, RESULT) %>%
   mutate(PARAMETER = recode(PARAMETER,"BEAVER_FLOW_MOD"='Beaver Flow Modifications', 
-                            "WEATHER"= 'Weather',"CONDITIONS"= 'Conditions',"OBSERVATIONS" = 'Observations'),
+                            "WEATHER"= 'Weather',"CONDITIONS"= 'Conditions'),
          group = PARAMETER) %>%
   mutate(group= recode(group, 'Beaver Flow Modifications'=4,'Weather'= 1,'Conditions'= 2,'Observations' = 3)) %>%
   arrange(group) %>%
